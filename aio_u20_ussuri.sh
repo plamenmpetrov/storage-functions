@@ -92,7 +92,7 @@ install_mysql_server(){
     max_connections = 4096
     collation-server = utf8_general_ci
     character-set-server = utf8
-    EOF
+EOF
     
     service mysql restart
 
@@ -128,7 +128,7 @@ install_openstack_keystone(){
     export OS_PROJECT_DOMAIN_NAME=Default
     export OS_AUTH_URL=http://$HOSTNAME:5000/v3
     export OS_IDENTITY_API_VERSION=3
-    EOF
+EOF
     
     source admin-openrc
     openstack role create user
@@ -151,7 +151,7 @@ install_openstack_keystone(){
     export OS_PROJECT_DOMAIN_NAME=Default
     export OS_AUTH_URL=http://$HOSTNAME:5000/v3
     export OS_IDENTITY_API_VERSION=3
-    EOF
+EOF
     
     source zion-openrc
     PROJECT_ID=$(openstack token issue | grep -w project_id | awk '{print $4}')
@@ -159,7 +159,7 @@ install_openstack_keystone(){
     cat <<-EOF >> zion-openrc
     export STORAGE_URL=http://$IP_ADDRESS:8080/v1/AUTH_$PROJECT_ID
     export TOKEN=\$(openstack token issue | grep -w id | awk '{print \$4}')
-    EOF
+EOF
 
 }
 
@@ -179,7 +179,7 @@ install_openstack_horizon() {
     LANGUAGES = (
         ('en', 'English'),
     )
-    EOF
+EOF
     
     sed -i '/OPENSTACK_HOST = "127.0.0.1"/c\OPENSTACK_HOST = "$HOSTNAME"' /etc/openstack-dashboard/local_settings.py
     sed -i 's/\/identity\/v3/:5000\/v3/g' /etc/openstack-dashboard/local_settings.py
@@ -337,7 +337,7 @@ install_zion_middleware_proxy(){
     execution_server = proxy
     redis_host = $IP_ADDRESS
     disaggregated_compute = false
-    EOF
+EOF
 
     sed -i '/^pipeline =/ d' /etc/swift/proxy-server.conf
     sed -i '/\[pipeline:main\]/a pipeline = catch_errors gatekeeper healthcheck proxy-logging cache container_sync bulk tempurl ratelimit authtoken keystoneauth copy container-quotas account-quotas storage_functions slo dlo versioned_writes symlink proxy-logging proxy-server' /etc/swift/proxy-server.conf
@@ -360,7 +360,7 @@ install_zion_middleware_sn(){
     execution_server = object
     redis_host = $IP_ADDRESS
     disaggregated_compute = false
-    EOF
+EOF
 
     sed -i '/^pipeline =/ d' /etc/swift/object-server.conf
     sed -i '/\[pipeline:main\]/a pipeline = healthcheck recon storage_functions object-server' /etc/swift/object-server.conf
